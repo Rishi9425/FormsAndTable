@@ -1,0 +1,12 @@
+{
+  "columns": [
+    { "field": "name", "header": "Name", "type": "autocomplete", "filter": true },
+    { "field": "country.name", "header": "Country", "type": "text", "filter": true },
+    { "field": "representative.name", "header": "Agent", "type": "dropdown", "filter": true },
+    { "field": "date", "header": "Date", "type": "date", "filter": true },
+    { "field": "balance", "header": "Balance", "type": "currency", "currency": "USD", "filter": true },
+    { "field": "status", "header": "Status", "type": "tag", "filter": true },
+    { "field": "activity", "header": "Activity", "type": "progressbar", "filter": true },
+    { "field": "verified", "header": "Verified", "type": "boolean", "filter": true }
+  ]
+}

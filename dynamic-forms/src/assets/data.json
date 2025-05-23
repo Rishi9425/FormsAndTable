@@ -1,0 +1,150 @@
+{
+ "data" : [
+  {
+    "type": "text",
+    "label": "Name",
+    "name": "name",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Name is required"
+      } 
+    ]
+  },
+  {
+    "type": "email",
+    "label": "Email",
+    "name": "email",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Email is required"
+      },
+      {
+        "name": "email",
+        "validator": "email",
+        "message": "Please enter a valid email address"
+      }
+    ]
+  },
+  {
+    "type": "password",
+    "label": "Password",
+    "name": "password",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Password is required"
+      },
+      {
+        "name": "minLength",
+        "validator": "minLength",
+        "value": 8,
+        "message": "Password must be at least 8 characters"
+      }
+    ]
+  },
+  {
+    "type": "textarea",
+    "label": "Description",
+    "name": "description",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Description is required"
+      }
+    ]
+  },
+  
+  {
+    "type": "number",
+    "label": "Age",
+    "name": "age",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Age is required"
+      },
+      {
+        "name": "min",
+        "validator": "min",
+        "value": 18,
+        "message": "Age must be at least 18"
+      }
+    ]
+  },
+  {
+    "type": "date",
+    "label": "Birthday",
+    "name": "birthday",
+    "value": "",
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Birthday is required"
+      }
+    ]
+  },
+  {
+    "type": "radio",
+    "label": "Gender",
+    "name": "gender",
+    "value": true,
+    "options": [
+      { "label": "Male", "value": true },
+      { "label": "Female", "value": false }
+    ],
+    "validations": []
+  },
+  {
+    "type": "checkbox",
+    "label": "Subscribe to newsletter",
+    "name": "subscribe",
+    "value": false,
+    "validations": []
+  },
+  {
+    "type": "select",
+    "label": "Country",
+    "name": "country",
+    "value": 1,
+    "options": [
+      { "label": "India", "value": 1 },
+      { "label": "USA", "value": 2 },
+      { "label": "Canada", "value": 3 }
+    ],
+    "validations": [
+      {
+        "name": "required",
+        "validator": "required",
+        "message": "Country is required"
+      }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "label": "Skills",
+    "name": "skills",
+    "value": [],
+    "options": [
+      { "label": "Angular", "value": "angular" },
+      { "label": "React", "value": "react" },
+      { "label": "Vue", "value": "vue" },
+      { "label": "Node.js", "value": "nodejs" },
+      { "label": "Python", "value": "python" }
+    ],
+    "validations": []
+  }
+]
+}

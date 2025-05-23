@@ -1,0 +1,181 @@
+<theme-switcher />
+<div class="card">
+    <p-table #dt1 [value]="customers" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" 
+            [loading]="loading" [paginator]="true" [globalFilterFields]="getGlobalFilterFields()">
+        <ng-template #caption>
+            <div class="flex">
+                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                <div class="p-inputgroup ml-auto">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-search"></i>
+                    </span>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt1)" placeholder="Search keyword" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <!-- Dynamically generate column headers based on column configuration -->
+                <ng-container *ngFor="let column of columns">
+                    <th [style]="getColumnWidth(column)" *ngIf="column.filter">
+                        <div class="flex items-center">
+                            {{ column.header }}
+                            
+                            <!-- Text filter -->
+                            <ng-container *ngIf="column.type === 'text'">
+                                <p-columnFilter type="text" [field]="column.field" display="menu" placeholder="Search"/>
+                            </ng-container>
+
+
+<!--for autocomplete filter-->
+
+<ng-container *ngIf="column.type === 'autocomplete'">
+  <p-columnFilter 
+    [field]="column.field" 
+    display="menu" 
+    [showOperator]="false" 
+    [showMatchModes]="false">
+   
+    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+      <p-autoComplete 
+       placeholder="Search Name"
+        [(ngModel)]="column.selectedItem"
+        [suggestions]="filteredItems"
+        [virtualScroll]="true"
+        [virtualScrollItemSize]="34"
+        (completeMethod)="filterItems($event)"
+        optionLabel="name"
+        [dropdown]="true"
+        (onSelect)="filter($event.value.name)" />
+    </ng-template>
+
+  </p-columnFilter>
+</ng-container>
+                            <!-- Date filter -->
+                            <ng-container *ngIf="column.type === 'date'">
+                                <p-columnFilter type="date" [field]="column.field" display="menu" placeholder="Search Date"></p-columnFilter>
+                            </ng-container>
+                            
+                            <!-- Currency filter -->
+                            <ng-container *ngIf="column.type === 'currency'">
+                                <p-columnFilter type="numeric" [field]="column.field" display="menu" [currency]="column.currency " placeholder="Search Currency"/>
+                            </ng-container>
+                            
+                            <!-- Boolean filter -->
+                            <ng-container *ngIf="column.type === 'boolean'">
+                                <p-columnFilter type="boolean" [field]="column.field" display="menu" />
+                            </ng-container>
+                            
+                            <!-- Representative filter -->
+                            <ng-container *ngIf="column.type === 'dropdown'">
+                                <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                    <ng-template #filter let-value let-filter="filterCallback">
+                                        <p-multiselect [ngModel]="value" [options]="representatives" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name" 
+                                        [panelStyle]="{ minWidth: '16rem' }">
+                                            <ng-template let-option #item>
+                                                <div class="flex items-center gap-2">
+                                                    <img [alt]="option.label" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}" style="width: 32px" />
+                                                    <span>{{ option.name }}</span>
+                                                </div>
+                                            </ng-template>
+                                        </p-multiselect>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </ng-container>
+                            
+                            <!-- Status filter -->
+                            <ng-container *ngIf="column.field === 'status'">
+                                <p-columnFilter field="status" matchMode="equals" display="menu">
+                                    <ng-template #filter let-value let-filter="filterCallback">
+                                        <p-select [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Select One" styleClass="w-full">
+                                            <ng-template let-option #item>
+                                                <p-tag [value]="option.value" [severity]="getSeverity(option.value)"></p-tag>
+                                            </ng-template>
+                                        </p-select>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </ng-container>
+                            
+                            <!-- Activity filter -->
+                            <ng-container *ngIf="column.type === 'progressbar'">
+                                <p-columnFilter field="activity" matchMode="between" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                    <ng-template #filter let-value let-filter="filterCallback">
+                                        <p-slider [ngModel]="value || activityValues" [range]="true" styleClass="m-4" (onSlideEnd)="filter($event.values)" />
+                                        <div class="flex items-center px-2">
+                                            <span *ngIf="!value">{{ activityValues[0] }} - {{ activityValues[1] }}</span>
+                                            <span *ngIf="value">{{ value[0] }} - {{ value[1] }}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </ng-container>
+                        </div>
+                    </th>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template #body let-customer>
+            <tr>
+                <!-- Dynamically generate table cells based on column configuration -->
+                <ng-container *ngFor="let column of columns">
+                    <td *ngIf="column.filter">
+                        <!-- Name field -->
+                        <ng-container *ngIf="column.field === 'name'">
+                            {{ customer.name }}
+                        </ng-container>
+
+                        <!-- Country field -->
+                        <ng-container *ngIf="column.field === 'country.name'">
+                            <div class="flex items-center gap-2">
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [ngClass]="'flag flag-' + customer.country.code" style="width: 20px" />
+                                <span>{{ customer.country.name }}</span>
+                            </div>
+                        </ng-container>
+
+                        <!-- Representative field -->
+                        <ng-container *ngIf="column.field === 'representative.name'">
+                            <div class="flex items-center gap-2">
+                                <img [alt]="customer.representative.name" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ customer.representative.image }}" width="32" />
+                                <span>{{ customer.representative.name }}</span>
+                            </div>
+                        </ng-container>
+
+                        <!-- Date field -->
+                        <ng-container *ngIf="column.field === 'date'">
+                            {{ customer.date | date: 'MM/dd/yyyy' }}
+                        </ng-container>
+
+                        <!-- Balance field -->
+                        <ng-container *ngIf="column.field === 'balance'">
+                            {{ customer.balance | currency: column.currency : 'symbol' }}
+                        </ng-container>
+
+                        <!-- Status field -->
+                        <ng-container *ngIf="column.field === 'status'">
+                            <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)" />
+                        </ng-container>
+
+                        <!-- Activity field -->
+                        <ng-container *ngIf="column.field === 'activity'">
+                            <p-progressbar [value]="customer.activity" [showValue]="false" />
+                        </ng-container>
+
+                        <!-- Verified field -->
+                        <ng-container *ngIf="column.field === 'verified'">
+                            <div class="text-center">
+                                <i class="pi" [ngClass]="{
+                                    'text-green-500 pi-check-circle': customer.verified,
+                                    'text-red-500 pi-times-circle': !customer.verified
+                                }"></i>
+                            </div>
+                        </ng-container>
+                    </td>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td [attr.colspan]="columns.length">No customers found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
